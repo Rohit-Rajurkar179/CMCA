@@ -1,0 +1,959 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="FindDocumentTypeDateFormat" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:snm="clr-namespace:System.Net.Mail;assembly=System.Net.Mail" xmlns:str="clr-namespace:System.Text.RegularExpressions;assembly=System.Text.RegularExpressions" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_MailReceivedDate" Type="InArgument(x:String)" />
+    <x:Property Name="in_FileName" Type="InArgument(x:String)" />
+    <x:Property Name="in_FileData" Type="InArgument(x:String)" />
+    <x:Property Name="out_RenameDateFormat" Type="OutArgument(x:String)" />
+    <x:Property Name="in_DocumentType" Type="InArgument(x:String)" />
+    <x:Property Name="in_MailFolder" Type="InArgument(x:String)" />
+    <x:Property Name="in_MailItem" Type="InArgument(snm:MailMessage)" />
+    <x:Property Name="in_DocTypeAbbv" Type="InArgument(x:String)" />
+    <x:Property Name="LogFilePath" Type="InArgument(x:String)" />
+    <x:Property Name="out_FundingAmount" Type="OutArgument(x:String)" />
+    <x:Property Name="out_UncalledCapital" Type="OutArgument(x:String)" />
+    <x:Property Name="in_FundName" Type="InArgument(x:String)" />
+    <x:Property Name="out_CashDistribution" Type="OutArgument(x:String)" />
+    <x:Property Name="out_CapitalgainAndLoss" Type="OutArgument(x:String)" />
+    <x:Property Name="out_DueDate" Type="OutArgument(s:DateTime)" />
+    <x:Property Name="out_Otherlocal" Type="OutArgument(x:String)" />
+    <x:Property Name="out_recallableCapital" Type="OutArgument(x:String)" />
+    <x:Property Name="out_incomelocal" Type="OutArgument(x:String)" />
+    <x:Property Name="out_ReturnOfPrincipal_principal_local" Type="OutArgument(x:String)" />
+    <x:Property Name="out_DistributionDate" Type="OutArgument(x:String)" />
+    <x:Property Name="out_InvestmentDate" Type="OutArgument(x:String)" />
+    <x:Property Name="out_EntityName" Type="OutArgument(x:String)" />
+    <x:Property Name="out_SecurityDescription" Type="OutArgument(x:String)" />
+    <x:Property Name="out_ShareNo" Type="OutArgument(x:String)" />
+    <x:Property Name="out_priceOnDistribution" Type="OutArgument(x:String)" />
+    <x:Property Name="out_ReturnOfPrincipal" Type="OutArgument(x:String)" />
+    <x:Property Name="out_GainLoss" Type="OutArgument(x:String)" />
+    <x:Property Name="out_ShareCost" Type="OutArgument(x:String)" />
+    <x:Property Name="out_EffectiveDate" Type="OutArgument(x:String)" />
+    <x:Property Name="out_GainLossType" Type="InArgument(x:String)" />
+    <x:Property Name="FolderMoveLocation" Type="InArgument(x:String)" />
+  </x:Members>
+  <VisualBasic.Settings>
+    <x:Null />
+  </VisualBasic.Settings>
+  <sap:VirtualizedContainerService.HintSize>1410.4,1420</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>FindDocumentTypeDateFormat_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>System.Reflection</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+      <x:String>System.Text.RegularExpressions</x:String>
+      <x:String>Microsoft.Office.Interop.Word</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>NPOI</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Configuration.ConfigurationManager</AssemblyReference>
+      <AssemblyReference>System.Console</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.Common</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Drawing.Common</AssemblyReference>
+      <AssemblyReference>System.Drawing.Primitives</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>System.Memory.Data</AssemblyReference>
+      <AssemblyReference>System.Net.Mail</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Private.DataContractSerialization</AssemblyReference>
+      <AssemblyReference>System.Private.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.Private.Uri</AssemblyReference>
+      <AssemblyReference>System.Reflection.DispatchProxy</AssemblyReference>
+      <AssemblyReference>System.Reflection.Metadata</AssemblyReference>
+      <AssemblyReference>System.Reflection.TypeExtensions</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Primitives</AssemblyReference>
+      <AssemblyReference>System.Security.Permissions</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities.ViewModels</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Workflow</AssemblyReference>
+      <AssemblyReference>System.Text.RegularExpressions</AssemblyReference>
+      <AssemblyReference>System.Data.SqlClient</AssemblyReference>
+      <AssemblyReference>Microsoft.Office.Interop.Word</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="DocumentTypeData&amp;DateExtraction" sap:VirtualizedContainerService.HintSize="696,1355.2" sap2010:WorkflowViewState.IdRef="Sequence_2">
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Flowchart DisplayName="DocumentTypeData&amp;DateExtraction" sap:VirtualizedContainerService.HintSize="633.6,1150.4" sap2010:WorkflowViewState.IdRef="Flowchart_2">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <av:Point x:Key="ShapeLocation">310,2.5</av:Point>
+          <av:Size x:Key="ShapeSize">60,75.2</av:Size>
+          <av:PointCollection x:Key="ConnectorLocation">340,77.7 340,127.7</av:PointCollection>
+          <x:Double x:Key="Height">1113.7333333333333</x:Double>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <Flowchart.StartNode>
+        <x:Reference>__ReferenceID21</x:Reference>
+      </Flowchart.StartNode>
+      <FlowDecision x:Name="__ReferenceID21" Condition="[in_DocumentType.ToLower.Contains(&quot;Capital Call&quot;.ToLower)]" DisplayName="Capital Call " sap:VirtualizedContainerService.HintSize="70.4,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_10">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <av:Point x:Key="ShapeLocation">304.8,127.7</av:Point>
+            <av:Size x:Key="ShapeSize">70.4,87.2</av:Size>
+            <av:PointCollection x:Key="FalseConnector">375.20000000000005,171.3 400,171.3 400,236.4</av:PointCollection>
+            <av:PointCollection x:Key="TrueConnector">304.8,171.2 274.79999999999995,171.2 274.79999999999995,169.6 200,169.6</av:PointCollection>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <FlowDecision.True>
+          <FlowStep x:Name="__ReferenceID12">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <av:Point x:Key="ShapeLocation">0,143.6</av:Point>
+                <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="DataExtraction\CC_Log_Data.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_6" UnSafe="False" WorkflowFileName="DataExtraction\CC_Log_Data.xaml">
+              <ui:InvokeWorkflowFile.Arguments>
+                <InArgument x:TypeArguments="x:String" x:Key="LogFilePath">[LogFilePath]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_FileData">[in_FileData]</InArgument>
+                <InArgument x:TypeArguments="snm:MailMessage" x:Key="in_MailItem">[in_MailItem]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_currencyValue">$</InArgument>
+                <OutArgument x:TypeArguments="s:DateTime" x:Key="out_EffectiveDate">[out_DueDate]</OutArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_FundName">[in_FundName]</InArgument>
+                <OutArgument x:TypeArguments="x:String" x:Key="out_FundingAmount">[out_FundingAmount]</OutArgument>
+                <OutArgument x:TypeArguments="x:String" x:Key="out_UncalledCapital">[out_UncalledCapital]</OutArgument>
+                <OutArgument x:TypeArguments="x:String" x:Key="out_RenameDateFormat">[out_RenameDateFormat]</OutArgument>
+                <OutArgument x:TypeArguments="x:String" x:Key="out_RenameDate">[out_RenameDateFormat]</OutArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_MailReceivedDate">[in_MailReceivedDate]</InArgument>
+              </ui:InvokeWorkflowFile.Arguments>
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+            </ui:InvokeWorkflowFile>
+          </FlowStep>
+        </FlowDecision.True>
+        <FlowDecision.False>
+          <FlowDecision x:Name="__ReferenceID9" Condition="[in_DocumentType.ToLower.Contains(&quot;Cash Distribution&quot;.ToLower)]" DisplayName="Cash Dist" sap:VirtualizedContainerService.HintSize="70.4,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_11">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <av:Point x:Key="ShapeLocation">364.8,236.4</av:Point>
+                <av:Size x:Key="ShapeSize">70.4,87.2</av:Size>
+                <av:PointCollection x:Key="FalseConnector">435.20000000000005,280 460,280 460,336.4 400,336.4 400,366.4</av:PointCollection>
+                <av:PointCollection x:Key="TrueConnector">364.8,279.9 334.79999999999995,279.9 334.79999999999995,279.6 254.8,279.6</av:PointCollection>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <FlowDecision.True>
+              <FlowStep x:Name="__ReferenceID13">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <av:Point x:Key="ShapeLocation">54.80000000000001,253.60000000000002</av:Point>
+                    <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="DataExtraction\CD_Logs.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_7" UnSafe="False" WorkflowFileName="DataExtraction\CD_Logs.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="x:String" x:Key="LogFilePath">[LogFilePath]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_FundName">[in_FundName]</InArgument>
+                    <InArgument x:TypeArguments="snm:MailMessage" x:Key="in_MailItem">[in_MailItem]</InArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_CashDistribution">[out_CashDistribution]</OutArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_CapitalgainAndLoss">[out_CapitalgainAndLoss]</OutArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_FileData">[in_FileData]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_filepath" />
+                    <InArgument x:TypeArguments="x:String" x:Key="currencyValue" />
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_RenameDateFormat">[out_RenameDateFormat]</OutArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_MailReceivedDate">[in_MailReceivedDate]</InArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_Otherlocal">[out_Otherlocal]</OutArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_recallableCapital">[out_recallableCapital]</OutArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_incomelocal">[out_incomelocal]</OutArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_ReturnOfPrincipal_local">[out_ReturnOfPrincipal_principal_local]</OutArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </ui:InvokeWorkflowFile>
+              </FlowStep>
+            </FlowDecision.True>
+            <FlowDecision.False>
+              <FlowDecision x:Name="__ReferenceID10" Condition="[in_DocumentType.ToLower.Contains(&quot;Stock Distribution&quot;.ToLower)]" DisplayName="Stock Dist" sap:VirtualizedContainerService.HintSize="70.4,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_12">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    <av:Point x:Key="ShapeLocation">364.8,366.4</av:Point>
+                    <av:Size x:Key="ShapeSize">70.4,87.2</av:Size>
+                    <av:PointCollection x:Key="FalseConnector">435.20000000000005,410 455.59999999999997,410 455.59999999999997,466.4 395.59999999999997,466.4 395.59999999999997,496.4</av:PointCollection>
+                    <av:PointCollection x:Key="TrueConnector">364.8,409.9 334.79999999999995,409.9 334.79999999999995,409.59999999999997 254.8,409.59999999999997</av:PointCollection>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <FlowDecision.True>
+                  <FlowStep x:Name="__ReferenceID14">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <av:Point x:Key="ShapeLocation">54.80000000000001,383.59999999999997</av:Point>
+                        <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="DataExtraction\Stock Distribution.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_8" UnSafe="False" WorkflowFileName="DataExtraction\Stock Distribution.xaml">
+                      <ui:InvokeWorkflowFile.Arguments>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_FundName">[in_FundName]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_FileData">[in_FileData]</InArgument>
+                        <OutArgument x:TypeArguments="x:String" x:Key="out_InvestmentDate">[out_InvestmentDate]</OutArgument>
+                        <OutArgument x:TypeArguments="x:String" x:Key="out_EntityName">[out_EntityName]</OutArgument>
+                        <OutArgument x:TypeArguments="x:String" x:Key="out_SecurityDescription">[out_SecurityDescription]</OutArgument>
+                        <OutArgument x:TypeArguments="x:String" x:Key="out_SharesNo">[out_ShareNo]</OutArgument>
+                        <OutArgument x:TypeArguments="x:String" x:Key="out_PriceOnDistribution">[out_priceOnDistribution]</OutArgument>
+                        <OutArgument x:TypeArguments="x:String" x:Key="out_ReturnOfPrincipal">[out_ReturnOfPrincipal]</OutArgument>
+                        <OutArgument x:TypeArguments="x:String" x:Key="out_GainLoss">[out_GainLoss]</OutArgument>
+                        <OutArgument x:TypeArguments="x:String" x:Key="out_ShareCost">[out_ShareCost]</OutArgument>
+                        <OutArgument x:TypeArguments="x:String" x:Key="out_EffectiveDate">[out_EffectiveDate]</OutArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="LogFilePath">[LogFilePath]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="out_GainLossType">[out_GainLossType]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_MailRecievedDate">[in_MailReceivedDate]</InArgument>
+                        <OutArgument x:TypeArguments="x:String" x:Key="out_RenameDateFormat">[out_RenameDateFormat]</OutArgument>
+                        <InArgument x:TypeArguments="snm:MailMessage" x:Key="in_MailItem">[in_MailItem]</InArgument>
+                      </ui:InvokeWorkflowFile.Arguments>
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </ui:InvokeWorkflowFile>
+                  </FlowStep>
+                </FlowDecision.True>
+                <FlowDecision.False>
+                  <FlowDecision x:Name="__ReferenceID11" Condition="[in_DocumentType.ToLower.Contains(&quot;Capital Account Statement&quot;.ToLower) or in_DocumentType.ToLower.Contains(&quot;Capital Statement&quot;.ToLower)]" DisplayName="Cap Stmt" sap:VirtualizedContainerService.HintSize="70.4,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_13">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        <av:Point x:Key="ShapeLocation">360.4,496.4</av:Point>
+                        <av:Size x:Key="ShapeSize">70.4,87.2</av:Size>
+                        <av:PointCollection x:Key="FalseConnector">430.79999999999995,540 455.59999999999997,540 455.59999999999997,596.4 395.59999999999997,596.4 395.59999999999997,626.4</av:PointCollection>
+                        <av:PointCollection x:Key="TrueConnector">360.4,540 260.4,540</av:PointCollection>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <FlowDecision.True>
+                      <FlowStep x:Name="__ReferenceID15">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <av:Point x:Key="ShapeLocation">60.39999999999998,513.6</av:Point>
+                            <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="DataExtraction\Valuation.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="333.6,113.6" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_9" UnSafe="False" WorkflowFileName="DataExtraction\Valuation.xaml">
+                          <ui:InvokeWorkflowFile.Arguments>
+                            <InArgument x:TypeArguments="x:String" x:Key="LogFilePath">[LogFilePath]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_FundName">[in_FundName]</InArgument>
+                            <InArgument x:TypeArguments="snm:MailMessage" x:Key="in_MailItem">[in_MailItem]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_FileData">[in_FileData]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_CuirrencyValue">$</InArgument>
+                            <OutArgument x:TypeArguments="x:String" x:Key="out_FundingAmount">[out_FundingAmount]</OutArgument>
+                            <OutArgument x:TypeArguments="x:String" x:Key="out_RenameDateFormat">[out_RenameDateFormat]</OutArgument>
+                          </ui:InvokeWorkflowFile.Arguments>
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                        </ui:InvokeWorkflowFile>
+                      </FlowStep>
+                    </FlowDecision.True>
+                    <FlowDecision.False>
+                      <FlowDecision x:Name="__ReferenceID6" Condition="[in_DocumentType.ToLower.Contains(&quot;Investor Letter&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;Legal&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;Risk &amp; Exposure&quot;.ToLower) Or &#xA;in_DocumentType.ToLower.Contains(&quot;Investor Report&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;Monthly Estimate&quot;.ToLower)]" DisplayName="YYYY.MM " sap:VirtualizedContainerService.HintSize="70.4,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_9">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            <av:Point x:Key="ShapeLocation">360.4,626.4</av:Point>
+                            <av:Size x:Key="ShapeSize">70.4,87.2</av:Size>
+                            <av:PointCollection x:Key="FalseConnector">430.79999999999995,670 456.4,670 456.4,726.4 396.4,726.4 396.4,756.4</av:PointCollection>
+                            <av:PointCollection x:Key="TrueConnector">360.4,670 260.4,670</av:PointCollection>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <FlowDecision.True>
+                          <FlowStep x:Name="__ReferenceID16">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <av:Point x:Key="ShapeLocation">60.39999999999998,643.6</av:Point>
+                                <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Framework\ExtractDate\DateFormat(YYYY.MM) -(IL,IR,PPM,LPA,EXP,MEST).xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_10" UnSafe="False" WorkflowFileName="Framework\ExtractDate\DateFormat(YYYY.MM) -(IL,IR,PPM,LPA,EXP,MEST).xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FileData">[in_FileData]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FileName">[in_FileName]</InArgument>
+                                <InArgument x:TypeArguments="snm:MailMessage" x:Key="in_MailItem">[in_MailItem]</InArgument>
+                                <OutArgument x:TypeArguments="s:DateTime" x:Key="out_DueDate">[out_DueDate]</OutArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="BreakTriggerScopeInArgument" />
+                                <InArgument x:TypeArguments="x:String" x:Key="LogFilePath">[LogFilePath]</InArgument>
+                                <OutArgument x:TypeArguments="x:String" x:Key="out_RenameDateFormat">[out_RenameDateFormat]</OutArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                            </ui:InvokeWorkflowFile>
+                          </FlowStep>
+                        </FlowDecision.True>
+                        <FlowDecision.False>
+                          <FlowDecision x:Name="__ReferenceID7" Condition="[in_DocumentType.ToLower.Contains(&quot;Audited Report&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;PFIC&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;K-1&quot;.ToLower)]" DisplayName="YYYY Format" sap:VirtualizedContainerService.HintSize="72,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_8">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                <av:Point x:Key="ShapeLocation">360.4,756.4</av:Point>
+                                <av:Size x:Key="ShapeSize">72,87.2</av:Size>
+                                <av:PointCollection x:Key="FalseConnector">432.4,800 455.59999999999997,800 455.59999999999997,856.4000000000001 395.59999999999997,856.4000000000001 395.59999999999997,886.4000000000001</av:PointCollection>
+                                <av:PointCollection x:Key="TrueConnector">360.4,800 260.4,800</av:PointCollection>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <FlowDecision.True>
+                              <FlowStep x:Name="__ReferenceID18">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <av:Point x:Key="ShapeLocation">60.39999999999998,773.6</av:Point>
+                                    <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Framework\ExtractDate\DateFormat(YYYY)-(AFS,K-1,PFIC).xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_12" UnSafe="False" WorkflowFileName="Framework\ExtractDate\DateFormat(YYYY)-(AFS,K-1,K-3,PFIC).xaml">
+                                  <ui:InvokeWorkflowFile.Arguments>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_FileName">[in_FileName]</InArgument>
+                                    <InArgument x:TypeArguments="snm:MailMessage" x:Key="in_MailItem">[in_MailItem]</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="LogFilePath">[LogFilePath]</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_FileData">[in_FileData]</InArgument>
+                                    <OutArgument x:TypeArguments="s:DateTime" x:Key="out_DueDate">[out_DueDate]</OutArgument>
+                                    <OutArgument x:TypeArguments="x:String" x:Key="out_RenameDateFormat">[out_RenameDateFormat]</OutArgument>
+                                  </ui:InvokeWorkflowFile.Arguments>
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                </ui:InvokeWorkflowFile>
+                              </FlowStep>
+                            </FlowDecision.True>
+                            <FlowDecision.False>
+                              <FlowDecision x:Name="__ReferenceID8" Condition="[in_DocumentType.ToLower.Contains(&quot;Quarterly Report&quot;.ToLower)]" DisplayName="Quarter" sap:VirtualizedContainerService.HintSize="70.4,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_7">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                    <av:Point x:Key="ShapeLocation">360.4,886.4000000000001</av:Point>
+                                    <av:Size x:Key="ShapeSize">70.4,87.2</av:Size>
+                                    <av:PointCollection x:Key="TrueConnector">360.4,930.0000000000001 260.4,930.0000000000001</av:PointCollection>
+                                    <av:PointCollection x:Key="FalseConnector">430.79999999999995,930.0000000000001 459.2,930.0000000000001 459.2,996.4000000000001 399.2,996.4000000000001 399.2,1026.4</av:PointCollection>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <FlowDecision.True>
+                                  <FlowStep x:Name="__ReferenceID17">
+                                    <sap:WorkflowViewStateService.ViewState>
+                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                        <av:Point x:Key="ShapeLocation">60.39999999999998,903.6000000000001</av:Point>
+                                        <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                                      </scg:Dictionary>
+                                    </sap:WorkflowViewStateService.ViewState>
+                                    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Framework\ExtractDate\QuarterlyReportDate.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_11" UnSafe="False" WorkflowFileName="Framework\ExtractDate\QuarterlyReportDate.xaml">
+                                      <ui:InvokeWorkflowFile.Arguments>
+                                        <InArgument x:TypeArguments="x:String" x:Key="in_FileData">[in_FileData]</InArgument>
+                                        <InArgument x:TypeArguments="x:String" x:Key="in_FileName">[in_FileName]</InArgument>
+                                        <InArgument x:TypeArguments="snm:MailMessage" x:Key="in_Mailitem">[in_MailItem]</InArgument>
+                                        <OutArgument x:TypeArguments="s:DateTime" x:Key="out_DueDate">[out_DueDate]</OutArgument>
+                                        <InArgument x:TypeArguments="x:String" x:Key="LogFilePath">[LogFilePath]</InArgument>
+                                        <OutArgument x:TypeArguments="x:String" x:Key="out_RenameDateFormat">[out_RenameDateFormat]</OutArgument>
+                                      </ui:InvokeWorkflowFile.Arguments>
+                                      <sap:WorkflowViewStateService.ViewState>
+                                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                        </scg:Dictionary>
+                                      </sap:WorkflowViewStateService.ViewState>
+                                    </ui:InvokeWorkflowFile>
+                                  </FlowStep>
+                                </FlowDecision.True>
+                                <FlowDecision.False>
+                                  <FlowDecision x:Name="__ReferenceID19" Condition="[in_DocumentType.ToLower.Contains(&quot;Weekly Estimate&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;Redemption&quot;.ToLower)  Or in_DocumentType.ToLower.Contains(&quot;Newsletter&quot;.ToLower)]" DisplayName="YYYY.MM.DD " sap:VirtualizedContainerService.HintSize="77.6,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_14">
+                                    <sap:WorkflowViewStateService.ViewState>
+                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                        <av:Point x:Key="ShapeLocation">360.4,1026.4</av:Point>
+                                        <av:Size x:Key="ShapeSize">77.6,87.2</av:Size>
+                                        <av:PointCollection x:Key="FalseConnector">340.4,229.9 389.6,229.9 389.6,306.4</av:PointCollection>
+                                        <av:PointCollection x:Key="TrueConnector">360.4,1070 260,1070</av:PointCollection>
+                                      </scg:Dictionary>
+                                    </sap:WorkflowViewStateService.ViewState>
+                                    <FlowDecision.True>
+                                      <FlowStep x:Name="__ReferenceID20">
+                                        <sap:WorkflowViewStateService.ViewState>
+                                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                            <av:Point x:Key="ShapeLocation">60,1043.6</av:Point>
+                                            <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                                          </scg:Dictionary>
+                                        </sap:WorkflowViewStateService.ViewState>
+                                        <Flowchart DisplayName="YYYY.MM.DD " sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="Flowchart_3">
+                                          <Flowchart.Variables>
+                                            <Variable x:TypeArguments="str:MatchCollection" Name="MatchedDates" />
+                                          </Flowchart.Variables>
+                                          <sap:WorkflowViewStateService.ViewState>
+                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                              <av:Point x:Key="ShapeLocation">270,2.3999999999999986</av:Point>
+                                              <av:Size x:Key="ShapeSize">60,75</av:Size>
+                                              <x:Double x:Key="Width">640</x:Double>
+                                              <x:Double x:Key="Height">652.3000000000001</x:Double>
+                                              <av:PointCollection x:Key="ConnectorLocation">300,77.6 300,127.7</av:PointCollection>
+                                            </scg:Dictionary>
+                                          </sap:WorkflowViewStateService.ViewState>
+                                          <Flowchart.StartNode>
+                                            <x:Reference>__ReferenceID5</x:Reference>
+                                          </Flowchart.StartNode>
+                                          <FlowStep x:Name="__ReferenceID0">
+                                            <sap:WorkflowViewStateService.ViewState>
+                                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                <av:Point x:Key="ShapeLocation">130,599.3000000000001</av:Point>
+                                                <av:Size x:Key="ShapeSize">200,52</av:Size>
+                                                <av:PointCollection x:Key="ConnectorLocation">550,342.09999999999997 550,372.09999999999997 550.4,372.09999999999997</av:PointCollection>
+                                              </scg:Dictionary>
+                                            </sap:WorkflowViewStateService.ViewState>
+                                            <ui:ForEach x:TypeArguments="x:Object" CurrentIndex="{x:Null}" DisplayName="For Each" sap:VirtualizedContainerService.HintSize="200,52" sap2010:WorkflowViewState.IdRef="ForEach`1_2" Values="[MatchedDates]">
+                                              <ui:ForEach.Body>
+                                                <ActivityAction x:TypeArguments="x:Object">
+                                                  <ActivityAction.Argument>
+                                                    <DelegateInArgument x:TypeArguments="x:Object" Name="DateItem" />
+                                                  </ActivityAction.Argument>
+                                                  <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="620.8,708" sap2010:WorkflowViewState.IdRef="Sequence_4">
+                                                    <sap:WorkflowViewStateService.ViewState>
+                                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                      </scg:Dictionary>
+                                                    </sap:WorkflowViewStateService.ViewState>
+                                                    <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="577.6,618.4" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+                                                      <TryCatch.Try>
+                                                        <Sequence sap:VirtualizedContainerService.HintSize="540.8,387.2" sap2010:WorkflowViewState.IdRef="Sequence_3">
+                                                          <sap:WorkflowViewStateService.ViewState>
+                                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                            </scg:Dictionary>
+                                                          </sap:WorkflowViewStateService.ViewState>
+                                                          <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="478.4,210.4" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
+                                                            <ui:MultipleAssign.AssignOperations>
+                                                              <scg:List x:TypeArguments="ui:AssignOperation" Capacity="8">
+                                                                <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_1">
+                                                                  <ui:AssignOperation.To>
+                                                                    <OutArgument x:TypeArguments="x:Object">[DateItem]</OutArgument>
+                                                                  </ui:AssignOperation.To>
+                                                                  <ui:AssignOperation.Value>
+                                                                    <InArgument x:TypeArguments="x:String">[System.Text.RegularExpressions.Regex.Replace(DateItem.ToString,"(nd|rd|th)","")]</InArgument>
+                                                                  </ui:AssignOperation.Value>
+                                                                </ui:AssignOperation>
+                                                                <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_2">
+                                                                  <ui:AssignOperation.To>
+                                                                    <OutArgument x:TypeArguments="x:Object">[DateItem]</OutArgument>
+                                                                  </ui:AssignOperation.To>
+                                                                  <ui:AssignOperation.Value>
+                                                                    <InArgument x:TypeArguments="x:Object">[if(DateItem.ToString.ToLower.Contains("1st"),DateItem.ToString.Replace("1st","1"),DateItem)]</InArgument>
+                                                                  </ui:AssignOperation.Value>
+                                                                </ui:AssignOperation>
+                                                                <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_3">
+                                                                  <ui:AssignOperation.To>
+                                                                    <OutArgument x:TypeArguments="s:DateTime">[out_DueDate]</OutArgument>
+                                                                  </ui:AssignOperation.To>
+                                                                  <ui:AssignOperation.Value>
+                                                                    <InArgument x:TypeArguments="s:DateTime">[Convert.ToDateTime(DateItem.ToString)]</InArgument>
+                                                                  </ui:AssignOperation.Value>
+                                                                </ui:AssignOperation>
+                                                                <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_4">
+                                                                  <ui:AssignOperation.To>
+                                                                    <OutArgument x:TypeArguments="x:String">[out_RenameDateFormat]</OutArgument>
+                                                                  </ui:AssignOperation.To>
+                                                                  <ui:AssignOperation.Value>
+                                                                    <InArgument x:TypeArguments="x:String">[out_DueDate.ToString("yyyy.MM.dd")]</InArgument>
+                                                                  </ui:AssignOperation.Value>
+                                                                </ui:AssignOperation>
+                                                              </scg:List>
+                                                            </ui:MultipleAssign.AssignOperations>
+                                                          </ui:MultipleAssign>
+                                                          <ui:Break sap:VirtualizedContainerService.HintSize="478.4,24.8" sap2010:WorkflowViewState.IdRef="Break_2" />
+                                                        </Sequence>
+                                                      </TryCatch.Try>
+                                                      <TryCatch.Catches>
+                                                        <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="544,22.4" sap2010:WorkflowViewState.IdRef="Catch`1_1">
+                                                          <sap:WorkflowViewStateService.ViewState>
+                                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                            </scg:Dictionary>
+                                                          </sap:WorkflowViewStateService.ViewState>
+                                                          <ActivityAction x:TypeArguments="s:Exception">
+                                                            <ActivityAction.Argument>
+                                                              <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                                            </ActivityAction.Argument>
+                                                          </ActivityAction>
+                                                        </Catch>
+                                                      </TryCatch.Catches>
+                                                    </TryCatch>
+                                                  </Sequence>
+                                                </ActivityAction>
+                                              </ui:ForEach.Body>
+                                            </ui:ForEach>
+                                          </FlowStep>
+                                          <FlowStep x:Name="__ReferenceID1">
+                                            <sap:WorkflowViewStateService.ViewState>
+                                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                <av:Point x:Key="ShapeLocation">13.199999999999989,467.7</av:Point>
+                                                <av:Size x:Key="ShapeSize">434,82</av:Size>
+                                                <av:PointCollection x:Key="ConnectorLocation">230,549.3 230,599.3000000000001</av:PointCollection>
+                                              </scg:Dictionary>
+                                            </sap:WorkflowViewStateService.ViewState>
+                                            <Assign sap:VirtualizedContainerService.HintSize="434,82" sap2010:WorkflowViewState.IdRef="Assign_2">
+                                              <Assign.To>
+                                                <OutArgument x:TypeArguments="str:MatchCollection">[MatchedDates]</OutArgument>
+                                              </Assign.To>
+                                              <Assign.Value>
+                                                <InArgument x:TypeArguments="str:MatchCollection">[System.Text.RegularExpressions.Regex.Matches(in_FileData.ToLower,"\d{1,2}(\/|\.)\d{1,2}(\/|\.)\d{4}|(\d{1,2}\s*(st|nd|rd|th)?\s+((jan|feb(r)?)(uary)?|mar(ch)?|apr(il)?|may?|(jun|jul)(e|y)?|aug(ust)?|oct(ober)?|(sep(t)?|nov|dec)(ember)?)\s+\d{4})|(((jan|feb(r)?)(uary)?|mar(ch)?|apr(il)?|may?|(jun|jul)(e|y)?|aug(ust)?|oct(ober)?|(sep(t)?|nov|dec)(ember)?)\s+\d{1,2}\s*(st|nd|rd|th)?\W\s*\d{4})|(\d{4}(\/|\.)\d{1,2}(\/|\.)\d{1,2})")]</InArgument>
+                                              </Assign.Value>
+                                              <sap:WorkflowViewStateService.ViewState>
+                                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                </scg:Dictionary>
+                                              </sap:WorkflowViewStateService.ViewState>
+                                            </Assign>
+                                            <FlowStep.Next>
+                                              <x:Reference>__ReferenceID0</x:Reference>
+                                            </FlowStep.Next>
+                                          </FlowStep>
+                                          <FlowDecision x:Name="__ReferenceID2" Condition="[String.IsNullOrEmpty(out_RenameDateFormat)]" DisplayName="Flow Decision" sap:VirtualizedContainerService.HintSize="79,87" sap2010:WorkflowViewState.IdRef="FlowDecision_15" True="{x:Reference __ReferenceID1}">
+                                            <sap:WorkflowViewStateService.ViewState>
+                                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                <av:Point x:Key="ShapeLocation">500.8,362.09999999999997</av:Point>
+                                                <av:Size x:Key="ShapeSize">79,87</av:Size>
+                                                <av:PointCollection x:Key="TrueConnector">500.8,405.7 230,405.7 230,467.7</av:PointCollection>
+                                              </scg:Dictionary>
+                                            </sap:WorkflowViewStateService.ViewState>
+                                          </FlowDecision>
+                                          <FlowStep x:Name="__ReferenceID3">
+                                            <sap:WorkflowViewStateService.ViewState>
+                                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                <av:Point x:Key="ShapeLocation">440,279.29999999999995</av:Point>
+                                                <av:Size x:Key="ShapeSize">200,52</av:Size>
+                                                <av:PointCollection x:Key="ConnectorLocation">540,332.09999999999997 540,362.09999999999997 540.4,362.09999999999997</av:PointCollection>
+                                              </scg:Dictionary>
+                                            </sap:WorkflowViewStateService.ViewState>
+                                            <ui:ForEach x:TypeArguments="x:Object" CurrentIndex="{x:Null}" DisplayName="For Each" sap:VirtualizedContainerService.HintSize="200,52" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[MatchedDates]">
+                                              <ui:ForEach.Body>
+                                                <ActivityAction x:TypeArguments="x:Object">
+                                                  <ActivityAction.Argument>
+                                                    <DelegateInArgument x:TypeArguments="x:Object" Name="DateItem" />
+                                                  </ActivityAction.Argument>
+                                                  <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="620.8,708" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                                                    <sap:WorkflowViewStateService.ViewState>
+                                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                      </scg:Dictionary>
+                                                    </sap:WorkflowViewStateService.ViewState>
+                                                    <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="577.6,618.4" sap2010:WorkflowViewState.IdRef="TryCatch_2">
+                                                      <TryCatch.Try>
+                                                        <Sequence sap:VirtualizedContainerService.HintSize="540.8,387.2" sap2010:WorkflowViewState.IdRef="Sequence_5">
+                                                          <sap:WorkflowViewStateService.ViewState>
+                                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                            </scg:Dictionary>
+                                                          </sap:WorkflowViewStateService.ViewState>
+                                                          <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="478.4,210.4" sap2010:WorkflowViewState.IdRef="MultipleAssign_2">
+                                                            <ui:MultipleAssign.AssignOperations>
+                                                              <scg:List x:TypeArguments="ui:AssignOperation" Capacity="8">
+                                                                <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_5">
+                                                                  <ui:AssignOperation.To>
+                                                                    <OutArgument x:TypeArguments="x:Object">[DateItem]</OutArgument>
+                                                                  </ui:AssignOperation.To>
+                                                                  <ui:AssignOperation.Value>
+                                                                    <InArgument x:TypeArguments="x:String">[System.Text.RegularExpressions.Regex.Replace(DateItem.ToString,"(nd|rd|th)","")]</InArgument>
+                                                                  </ui:AssignOperation.Value>
+                                                                </ui:AssignOperation>
+                                                                <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_6">
+                                                                  <ui:AssignOperation.To>
+                                                                    <OutArgument x:TypeArguments="x:Object">[DateItem]</OutArgument>
+                                                                  </ui:AssignOperation.To>
+                                                                  <ui:AssignOperation.Value>
+                                                                    <InArgument x:TypeArguments="x:Object">[if(DateItem.ToString.ToLower.Contains("1st"),DateItem.ToString.Replace("1st","1"),DateItem)]</InArgument>
+                                                                  </ui:AssignOperation.Value>
+                                                                </ui:AssignOperation>
+                                                                <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_7">
+                                                                  <ui:AssignOperation.To>
+                                                                    <OutArgument x:TypeArguments="s:DateTime">[out_DueDate]</OutArgument>
+                                                                  </ui:AssignOperation.To>
+                                                                  <ui:AssignOperation.Value>
+                                                                    <InArgument x:TypeArguments="s:DateTime">[Convert.ToDateTime(DateItem.ToString)]</InArgument>
+                                                                  </ui:AssignOperation.Value>
+                                                                </ui:AssignOperation>
+                                                                <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_8">
+                                                                  <ui:AssignOperation.To>
+                                                                    <OutArgument x:TypeArguments="x:String">[out_RenameDateFormat]</OutArgument>
+                                                                  </ui:AssignOperation.To>
+                                                                  <ui:AssignOperation.Value>
+                                                                    <InArgument x:TypeArguments="x:String">[out_DueDate.ToString("yyyy.MM.dd")]</InArgument>
+                                                                  </ui:AssignOperation.Value>
+                                                                </ui:AssignOperation>
+                                                              </scg:List>
+                                                            </ui:MultipleAssign.AssignOperations>
+                                                          </ui:MultipleAssign>
+                                                          <ui:Break sap:VirtualizedContainerService.HintSize="478.4,24.8" sap2010:WorkflowViewState.IdRef="Break_1" />
+                                                        </Sequence>
+                                                      </TryCatch.Try>
+                                                      <TryCatch.Catches>
+                                                        <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="544,22.4" sap2010:WorkflowViewState.IdRef="Catch`1_2">
+                                                          <sap:WorkflowViewStateService.ViewState>
+                                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                            </scg:Dictionary>
+                                                          </sap:WorkflowViewStateService.ViewState>
+                                                          <ActivityAction x:TypeArguments="s:Exception">
+                                                            <ActivityAction.Argument>
+                                                              <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                                            </ActivityAction.Argument>
+                                                          </ActivityAction>
+                                                        </Catch>
+                                                      </TryCatch.Catches>
+                                                    </TryCatch>
+                                                  </Sequence>
+                                                </ActivityAction>
+                                              </ui:ForEach.Body>
+                                            </ui:ForEach>
+                                            <FlowStep.Next>
+                                              <x:Reference>__ReferenceID2</x:Reference>
+                                            </FlowStep.Next>
+                                          </FlowStep>
+                                          <FlowDecision x:Name="__ReferenceID4" Condition="[MatchedDates.Count = 0]" DisplayName="Flow Decision" sap:VirtualizedContainerService.HintSize="79,87" sap2010:WorkflowViewState.IdRef="FlowDecision_16" True="{x:Reference __ReferenceID1}" False="{x:Reference __ReferenceID3}">
+                                            <sap:WorkflowViewStateService.ViewState>
+                                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                <av:Point x:Key="ShapeLocation">260.4,258.5</av:Point>
+                                                <av:Size x:Key="ShapeSize">79,87</av:Size>
+                                                <av:PointCollection x:Key="FalseConnector">339.59999999999997,302.1 369.59999999999997,302.1 369.59999999999997,305.69999999999993 440,305.69999999999993</av:PointCollection>
+                                                <av:PointCollection x:Key="TrueConnector">260.4,302.1 230,302.1 230,467.7</av:PointCollection>
+                                              </scg:Dictionary>
+                                            </sap:WorkflowViewStateService.ViewState>
+                                          </FlowDecision>
+                                          <FlowStep x:Name="__ReferenceID5">
+                                            <sap:WorkflowViewStateService.ViewState>
+                                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                <av:Point x:Key="ShapeLocation">83.19999999999999,127.7</av:Point>
+                                                <av:Size x:Key="ShapeSize">434,82</av:Size>
+                                                <av:PointCollection x:Key="ConnectorLocation">300.2,209.7 300.2,239.70000000000002 299.9,239.70000000000002 299.9,258.5</av:PointCollection>
+                                              </scg:Dictionary>
+                                            </sap:WorkflowViewStateService.ViewState>
+                                            <Assign sap:VirtualizedContainerService.HintSize="434,82" sap2010:WorkflowViewState.IdRef="Assign_1">
+                                              <Assign.To>
+                                                <OutArgument x:TypeArguments="str:MatchCollection">[MatchedDates]</OutArgument>
+                                              </Assign.To>
+                                              <Assign.Value>
+                                                <InArgument x:TypeArguments="str:MatchCollection">[System.Text.RegularExpressions.Regex.Matches(in_FileName.ToLower,"\d{1,2}(\/|\.)\d{1,2}(\/|\.)\d{4}|(\d{1,2}\s*(st|nd|rd|th)?\s+((jan|feb(r)?)(uary)?|mar(ch)?|apr(il)?|may?|(jun|jul)(e|y)?|aug(ust)?|oct(ober)?|(sep(t)?|nov|dec)(ember)?)\s+\d{4})|(((jan|feb(r)?)(uary)?|mar(ch)?|apr(il)?|may?|(jun|jul)(e|y)?|aug(ust)?|oct(ober)?|(sep(t)?|nov|dec)(ember)?)\s+\d{1,2}\s*(st|nd|rd|th)?\W\s*\d{4})|(\d{4}(\/|\.)\d{1,2}(\/|\.)\d{1,2})")]</InArgument>
+                                              </Assign.Value>
+                                              <sap:WorkflowViewStateService.ViewState>
+                                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                </scg:Dictionary>
+                                              </sap:WorkflowViewStateService.ViewState>
+                                            </Assign>
+                                            <FlowStep.Next>
+                                              <x:Reference>__ReferenceID4</x:Reference>
+                                            </FlowStep.Next>
+                                          </FlowStep>
+                                        </Flowchart>
+                                      </FlowStep>
+                                    </FlowDecision.True>
+                                  </FlowDecision>
+                                </FlowDecision.False>
+                              </FlowDecision>
+                            </FlowDecision.False>
+                          </FlowDecision>
+                        </FlowDecision.False>
+                      </FlowDecision>
+                    </FlowDecision.False>
+                  </FlowDecision>
+                </FlowDecision.False>
+              </FlowDecision>
+            </FlowDecision.False>
+          </FlowDecision>
+        </FlowDecision.False>
+      </FlowDecision>
+      <x:Reference>__ReferenceID6</x:Reference>
+      <x:Reference>__ReferenceID7</x:Reference>
+      <x:Reference>__ReferenceID8</x:Reference>
+      <x:Reference>__ReferenceID9</x:Reference>
+      <x:Reference>__ReferenceID10</x:Reference>
+      <x:Reference>__ReferenceID11</x:Reference>
+      <x:Reference>__ReferenceID12</x:Reference>
+      <x:Reference>__ReferenceID13</x:Reference>
+      <x:Reference>__ReferenceID14</x:Reference>
+      <x:Reference>__ReferenceID15</x:Reference>
+      <x:Reference>__ReferenceID16</x:Reference>
+      <x:Reference>__ReferenceID17</x:Reference>
+      <x:Reference>__ReferenceID18</x:Reference>
+      <x:Reference>__ReferenceID19</x:Reference>
+      <x:Reference>__ReferenceID20</x:Reference>
+    </Flowchart>
+    <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="633.6,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="696,1052.8" sap2010:WorkflowViewState.IdRef="Sequence_1">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Flowchart DisplayName="DocumentTypeData&amp;DateExtraction" sap:VirtualizedContainerService.HintSize="633.6,940.8" sap2010:WorkflowViewState.IdRef="Flowchart_1">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <av:Point x:Key="ShapeLocation">270,2.5</av:Point>
+                <av:Size x:Key="ShapeSize">60,75.2</av:Size>
+                <av:PointCollection x:Key="ConnectorLocation">300,77.7 300,107.7 299.59999999999997,107.7 299.59999999999997,186.4</av:PointCollection>
+                <x:Double x:Key="Height">903.6</x:Double>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <Flowchart.StartNode>
+              <x:Reference>__ReferenceID31</x:Reference>
+            </Flowchart.StartNode>
+            <FlowDecision x:Name="__ReferenceID31" Condition="[in_DocumentType.ToLower.Contains(&quot;Capital Call&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;Cash Distribution&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;Stock Distribution&quot;.ToLower) Or &#xA;in_DocumentType.ToLower.Contains(&quot;Weekly Estimate&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;Redemption&quot;.ToLower)  Or in_DocumentType.ToLower.Contains(&quot;Newsletter&quot;.ToLower)]" DisplayName="Flow Decision" sap:VirtualizedContainerService.HintSize="79.2,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_1">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  <av:Point x:Key="ShapeLocation">260.4,186.4</av:Point>
+                  <av:Size x:Key="ShapeSize">79.2,87.2</av:Size>
+                  <av:PointCollection x:Key="FalseConnector">340.4,229.9 389.6,229.9 389.6,306.4</av:PointCollection>
+                  <av:PointCollection x:Key="TrueConnector">260.4,230 200,230</av:PointCollection>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <FlowDecision.True>
+                <FlowStep x:Name="__ReferenceID26">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <av:Point x:Key="ShapeLocation">0,203.6</av:Point>
+                      <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Framework\ExtractDate\DateFormat(YYYY.MM.DD)-(CC,CD,SD,WEST,RD).xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Framework\ExtractDate\DateFormat(YYYY.MM.DD)-(CC,CD,SD,WEST,RD,Newsletter).xaml">
+                    <ui:InvokeWorkflowFile.Arguments>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_FileName">[in_FileName]</InArgument>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_FileData">[in_FileData]</InArgument>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_MailReceivedDate">[in_MailReceivedDate]</InArgument>
+                      <InArgument x:TypeArguments="snm:MailMessage" x:Key="in_MailItem">[in_MailItem]</InArgument>
+                      <InArgument x:TypeArguments="s:DateTime" x:Key="out_DueDate">[out_DueDate]</InArgument>
+                      <InArgument x:TypeArguments="x:String" x:Key="out_RenameDate">[out_RenameDateFormat]</InArgument>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_DocTypeAbbv">[in_DocTypeAbbv]</InArgument>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_FundName">[in_FundName]</InArgument>
+                    </ui:InvokeWorkflowFile.Arguments>
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                  </ui:InvokeWorkflowFile>
+                </FlowStep>
+              </FlowDecision.True>
+              <FlowDecision.False>
+                <FlowDecision x:Name="__ReferenceID22" Condition="[in_DocumentType.ToLower.Contains(&quot;Investor Letter&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;Legal&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;Risk &amp; Exposure&quot;.ToLower) Or &#xA;in_DocumentType.ToLower.Contains(&quot;Investor Report&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;Monthly Estimate&quot;.ToLower)]" DisplayName="Flow Decision" sap:VirtualizedContainerService.HintSize="79.2,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_2">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      <av:Point x:Key="ShapeLocation">349.6,306.4</av:Point>
+                      <av:Size x:Key="ShapeSize">79.2,87.2</av:Size>
+                      <av:PointCollection x:Key="FalseConnector">429.6,349.9 458.8,349.9 458.8,446.4 398.8,446.4 398.8,476.4</av:PointCollection>
+                      <av:PointCollection x:Key="TrueConnector">349.6,350 269.6,349.99999999999994</av:PointCollection>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <FlowDecision.True>
+                    <FlowStep x:Name="__ReferenceID27">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <av:Point x:Key="ShapeLocation">69.60000000000002,323.59999999999997</av:Point>
+                          <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Framework\ExtractDate\DateFormat(YYYY.MM) -(IL,IR,PPM,LPA,EXP,MEST).xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Framework\ExtractDate\DateFormat(YYYY.MM) -(IL,IR,PPM,LPA,EXP,MEST).xaml">
+                        <ui:InvokeWorkflowFile.Arguments>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_FileData">[in_FileData]</InArgument>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_FileName">[in_FileName]</InArgument>
+                          <InArgument x:TypeArguments="snm:MailMessage" x:Key="in_MailItem">[in_MailItem]</InArgument>
+                          <OutArgument x:TypeArguments="s:DateTime" x:Key="out_DueDate">[out_DueDate]</OutArgument>
+                          <OutArgument x:TypeArguments="x:String" x:Key="out_RenameDate">[out_RenameDateFormat]</OutArgument>
+                          <InArgument x:TypeArguments="x:String" x:Key="BreakTriggerScopeInArgument" />
+                          <InArgument x:TypeArguments="x:String" x:Key="LogFilePath">[LogFilePath]</InArgument>
+                        </ui:InvokeWorkflowFile.Arguments>
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                      </ui:InvokeWorkflowFile>
+                    </FlowStep>
+                  </FlowDecision.True>
+                  <FlowDecision.False>
+                    <FlowDecision x:Name="__ReferenceID24" Condition="[in_DocumentType.ToLower.Contains(&quot;Audited Financial&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;PFIC&quot;.ToLower) Or in_DocumentType.ToLower.Contains(&quot;K-1&quot;.ToLower)]" DisplayName="Flow Decision" sap:VirtualizedContainerService.HintSize="79.2,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_4">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          <av:Point x:Key="ShapeLocation">358.8,476.4</av:Point>
+                          <av:Size x:Key="ShapeSize">79.2,87.2</av:Size>
+                          <av:PointCollection x:Key="FalseConnector">438.8,519.9 466.20000000000005,519.9 466.20000000000005,616.4 406.20000000000005,616.4 406.20000000000005,646.4</av:PointCollection>
+                          <av:PointCollection x:Key="TrueConnector">358.8,520 278.8,520</av:PointCollection>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <FlowDecision.True>
+                        <FlowStep x:Name="__ReferenceID28">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <av:Point x:Key="ShapeLocation">78.80000000000001,493.59999999999997</av:Point>
+                              <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Framework\ExtractDate\DateFormat(YYYY)-(AFS,K-1,PFIC).xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Framework\ExtractDate\DateFormat(YYYY)-(AFS,K-1,K-3,PFIC).xaml">
+                            <ui:InvokeWorkflowFile.Arguments>
+                              <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                            </ui:InvokeWorkflowFile.Arguments>
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                          </ui:InvokeWorkflowFile>
+                        </FlowStep>
+                      </FlowDecision.True>
+                      <FlowDecision.False>
+                        <FlowDecision x:Name="__ReferenceID25" Condition="[in_DocumentType.ToLower.Contains(&quot;Quarterly Report&quot;.ToLower)]" DisplayName="Flow Decision" sap:VirtualizedContainerService.HintSize="79.2,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_5">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              <av:Point x:Key="ShapeLocation">367.20000000000005,646.4</av:Point>
+                              <av:Size x:Key="ShapeSize">79.2,87.2</av:Size>
+                              <av:PointCollection x:Key="FalseConnector">445.6,690 474.8,690 474.8,786.4 414.8,786.4 414.8,816.4</av:PointCollection>
+                              <av:PointCollection x:Key="TrueConnector">367.20000000000005,690 287.20000000000005,690</av:PointCollection>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <FlowDecision.True>
+                            <FlowStep x:Name="__ReferenceID29">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <av:Point x:Key="ShapeLocation">87.20000000000005,663.6</av:Point>
+                                  <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Framework\ExtractDate\QuarterlyReportDate.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_4" UnSafe="False" WorkflowFileName="Framework\ExtractDate\QuarterlyReportDate.xaml">
+                                <ui:InvokeWorkflowFile.Arguments>
+                                  <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                                </ui:InvokeWorkflowFile.Arguments>
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                              </ui:InvokeWorkflowFile>
+                            </FlowStep>
+                          </FlowDecision.True>
+                          <FlowDecision.False>
+                            <FlowDecision x:Name="__ReferenceID23" Condition="[in_DocumentType.ToLower.Contains(&quot;Capital Account Statement&quot;.ToLower) or in_DocumentType.ToLower.Contains(&quot;Capital Statement&quot;.ToLower)]" DisplayName="Flow Decision" sap:VirtualizedContainerService.HintSize="79.2,87.2" sap2010:WorkflowViewState.IdRef="FlowDecision_3">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  <av:Point x:Key="ShapeLocation">375.6,816.4</av:Point>
+                                  <av:Size x:Key="ShapeSize">79.2,87.2</av:Size>
+                                  <av:PointCollection x:Key="TrueConnector">375.6,860 295.6,860</av:PointCollection>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <FlowDecision.True>
+                                <FlowStep x:Name="__ReferenceID30">
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <av:Point x:Key="ShapeLocation">95.60000000000002,833.6</av:Point>
+                                      <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                  <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Framework\ExtractDate\CapitalStatementDate.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_5" UnSafe="False" WorkflowFileName="Framework\ExtractDate\CapitalStatementDate.xaml">
+                                    <ui:InvokeWorkflowFile.Arguments>
+                                      <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                                    </ui:InvokeWorkflowFile.Arguments>
+                                    <sap:WorkflowViewStateService.ViewState>
+                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                      </scg:Dictionary>
+                                    </sap:WorkflowViewStateService.ViewState>
+                                  </ui:InvokeWorkflowFile>
+                                </FlowStep>
+                              </FlowDecision.True>
+                            </FlowDecision>
+                          </FlowDecision.False>
+                        </FlowDecision>
+                      </FlowDecision.False>
+                    </FlowDecision>
+                  </FlowDecision.False>
+                </FlowDecision>
+              </FlowDecision.False>
+            </FlowDecision>
+            <x:Reference>__ReferenceID22</x:Reference>
+            <x:Reference>__ReferenceID23</x:Reference>
+            <x:Reference>__ReferenceID24</x:Reference>
+            <x:Reference>__ReferenceID25</x:Reference>
+            <x:Reference>__ReferenceID26</x:Reference>
+            <x:Reference>__ReferenceID27</x:Reference>
+            <x:Reference>__ReferenceID28</x:Reference>
+            <x:Reference>__ReferenceID29</x:Reference>
+            <x:Reference>__ReferenceID30</x:Reference>
+          </Flowchart>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:CommentOut>
+  </Sequence>
+</Activity>
